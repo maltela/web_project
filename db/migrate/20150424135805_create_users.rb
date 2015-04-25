@@ -1,6 +1,6 @@
 class CreateUsers < ActiveRecord::Migration
   def change
-    create_table :users do |t|
+    create_table(:users, id: false)  do |t|
       t.string :user_id
       t.string :salt_masterkey
       t.string :pubkey_user
