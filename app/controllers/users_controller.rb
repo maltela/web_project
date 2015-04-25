@@ -27,14 +27,21 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     respond_to do |format|
-      if @user.save
-        format.html { redirect_to register_url, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+      if !(User.find_by_identity(@user.identity))
+        respond_to do |format|
+          if @user.save
+            format.html { redirect_to register_url, notice: 'User was successfully created.' }
+            format.json { render :show, status: :created, location: @user }
+          else
+            format.html { render :new }
+            format.json { render json: @user.errors, status: :unprocessable_entity }
+          end
+        end
       end
-    end
+      format.html { render :new }
+      format.json { render json: @user.errors, status: :unprocessable_entity, notice: "Identity already exists"}
+      end
+
   end
 
   private
