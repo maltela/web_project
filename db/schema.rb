@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150424135805) do
+ActiveRecord::Schema.define(version: 20150425104512) do
 
   create_table "messages", force: true do |t|
-    t.string   "recipient_id"
-    t.string   "sender_id"
+    t.integer  "recipient_id"
+    t.integer  "sender_id"
     t.string   "cipher"
     t.string   "sig_recipient"
     t.string   "iv"
@@ -24,8 +24,8 @@ ActiveRecord::Schema.define(version: 20150424135805) do
     t.datetime "updated_at"
   end
 
-  create_table "users", id: false, force: true do |t|
-    t.string   "user_id"
+  create_table "users", primary_key: "user_id", force: true do |t|
+    t.string   "identity"
     t.string   "salt_masterkey"
     t.string   "pubkey_user"
     t.string   "privkey_user_enc"
