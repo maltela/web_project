@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get "register", to: 'users#new'
   post "register", to: 'users#register'
+  get 'users/login/:identity', to: 'users#login'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
