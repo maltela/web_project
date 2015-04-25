@@ -5,6 +5,14 @@ class UsersController < ApplicationController
   def index
     @users = User.all
   end
+  def getPubKey
+    @user = User.find_by_identity(params[:identity])
+    if (@user)
+      respond_with(@user.pubkey_user)
+    else
+      respond_with(:status => "Identity not found")
+    end
+  end
 
   # GET /users/1
   # GET /users/1.json
