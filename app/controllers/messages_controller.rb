@@ -5,7 +5,8 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    respond_with(@message = Message.all)
+    @message = Message.all
+    respond_with(@message)
   end
 
   # GET /messages/1
@@ -14,6 +15,8 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id])
 
     respond_with(@message)
+
+
   end
 
   # GET /messages/new
@@ -73,6 +76,6 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params[:message]
+      params.require(:message).permit(:message_object,:timestamp,:receiver,:sig_service,:signature)
     end
 end
