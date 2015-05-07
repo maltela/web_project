@@ -5,14 +5,18 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @message = Message.all
+    @message = Message.find_by_sql("select id from messages where ????")
+
+    # Beziehung zwischen Users und Messages unklar
+
+
     respond_with(@message)
   end
 
   # GET /messages/1
   # GET /messages/1.json
   def show
-    @message = Message.find(params[:id])
+    @message = Message.find(params[:id,:timestamp,:sig_message])
 
     respond_with(@message)
 
@@ -76,6 +80,6 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:message_object,:timestamp,:receiver,:sig_service,:signature)
+      params.require(:message).permit(:message_object,:timestamp,:receiver,:sig_service,:sig_message)
     end
 end
