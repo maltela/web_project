@@ -19,6 +19,8 @@ class MessagesController < ApplicationController
   # GET /messages/1.json
   def show
     #Woher nimmst du die identity, timestamp und sig_message?
+    #Und was willst du genau mit sig_message machen? Den Parameter gibt es nicht in der
+    # Datenbank
     @message = Message.find_by_sql(["select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
