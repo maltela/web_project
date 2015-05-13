@@ -8,6 +8,7 @@ class MessagesController < ApplicationController
     @message = Message.find_by_sql("select id from messages where ????")
 
     # Beziehung zwischen Users und Messages unklar
+    ## Inwiefern?
 
 
     respond_with(@message)
@@ -19,7 +20,7 @@ class MessagesController < ApplicationController
     @message = Message.find_by_sql(["select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
-                                    on m.recipient_id=user_id
+                                    on m.recipient=id=user_id
                                     where u.identity=?
                                       and m.timestamp=?
                                       and m.sig_message=?
