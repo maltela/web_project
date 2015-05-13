@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   def index
     @users = User.all
   end
-  def getPubKey
+  def pubKey
     @user = User.find_by_identity(params[:identity])
     if (@user)
       respond_with(@user.pubkey_user)
@@ -19,9 +19,9 @@ class UsersController < ApplicationController
   def login
     @user = User.find_by_identity(params[:identity])
     if (@user)
-      respond_with(@user.salt_masterkey, @user.privkey_user_enc, @user.pubkey_user, :status => "OK")
+      respond_with(@user.salt_masterkey, @user.privkey_user_enc, @user.pubkey_user, status: 100)
     else
-      respond_with(:status => "Identity not found")
+      respond_with(status: 101)
     end
   end
 
@@ -39,15 +39,15 @@ class UsersController < ApplicationController
         respond_to do |format|
           if @user.save
             format.html { redirect_to register_url, notice: 'User was successfully created.' }
-            format.json { render :show, status: :created, location: @user }
+            format.json { render :show, status: 110, location: @user }
           else
             format.html { render :new }
-            format.json { render json: @user.errors, status: :unprocessable_entity }
+            format.json { render json: @user.errors, status: 119 }
           end
         end
       end
       format.html { render :new }
-      format.json { render json: @user.errors, status: :unprocessable_entity, notice: "Identity already exists"}
+      format.json { render json: @user.errors, status: 111}
       end
 
   end

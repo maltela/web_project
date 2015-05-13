@@ -1,7 +1,8 @@
 class MessagesController < ApplicationController
-  before_action :set_message, only: [:show, :edit, :update, :destroy]
+
   respond_to :html, :json
 
+  #im respond_with muss noch ein error_Code ausgegeben werden
   # GET /messages
   # GET /messages.json
   def index
@@ -17,6 +18,7 @@ class MessagesController < ApplicationController
   # GET /messages/1
   # GET /messages/1.json
   def show
+    #Woher nimmst du die identity, timestamp und sig_message?
     @message = Message.find_by_sql(["select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
@@ -40,20 +42,20 @@ class MessagesController < ApplicationController
   def edit
   end
 
-  # POST /messages
+   # POST /messages
   # POST /messages.json
   def create
-    @message = Message.new(message_params)
-
-    respond_to do |format|
+    newMessage = JSON.parse message_params
+    digest = sha256.digest newMessage
+    if digest == params[sig_service]
+      @message = Message.new(JSON.parse newMessage.inner_envelope)
       if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully created.' }
-        format.json { render :show, status: :created, location: @message }
+        format.html { redirect_to @message, notice: 'Message was successfully updated.' }
+        format.json { render :show, status: :ok, location: @message }
       else
-        format.html { render :new }
+        format.html { render :edit }
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end
-    end
   end
 
   # PATCH/PUT /messages/1
@@ -81,14 +83,11 @@ class MessagesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_message
-      @message = Message.find(params[:id])
-    end
+
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:identity,:cipher,:iv,:key_recipient_enc,:sig_recipient,:timestamp,:sig_message)
+      params.require(:message).permit(:identity, :inner_envelope, :sig_recipient,:timestamp)
 
     end
 end

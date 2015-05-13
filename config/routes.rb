@@ -4,10 +4,9 @@ Rails.application.routes.draw do
   resources :messages
 
 
-  get "register", to: 'users#new'
-  post "register", to: 'users#register'
-  get 'users/login/:identity', to: 'users#login'
-  get 'users/getPubKey/:identity', to: 'users#getPubKey'
+  get "/:identity", to: 'users#login'
+  post "/", to: 'users#register'
+  get 'users/:identity/pubkey', to: 'users#getPubKey'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
