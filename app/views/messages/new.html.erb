@@ -3,9 +3,8 @@
 <%= render 'form' %>
 
 <%= form_for(:message) do |f| %>
-    <div class="form-group"><%= f.text_field        :message_object,:placeholder => 'InnerUmschlag',:autofocus => true   ,:class=>'form-control'  %> </div>
     <div class="form-group"><%= f.text_field        :timestamp,     :placeholder => 'Timestamp'    ,:class=>'form-control'   %> </div>
-    <div class="form-group"><%= f.text_field        :receiver,      :placeholder => 'Empfänger'    ,:class=>'form-control'   %> </div>
+    <div class="form-group"><%= f.text_field        :identity,      :placeholder => 'Empfänger'    ,:class=>'form-control'   %> </div>
     <div class="form-group"><%= f.text_field        :sig_service,   :placeholder => 'SIG_SERVICE'  ,:class=>'form-control'   %> </div>
     <%= f.submit "Speichern", :class=>'btn btn-primary block full-width m-b' %>
 <%end%>

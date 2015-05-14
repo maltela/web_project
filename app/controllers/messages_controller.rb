@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
   def show
     #Woher nimmst du die identity, timestamp und sig_message?
     #Und was willst du genau mit sig_message machen? Den Parameter gibt es nicht in der
-    # Datenbank
+    # Datenbankzeigen
     @message = Message.find_by_sql(["select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
@@ -50,7 +50,11 @@ class MessagesController < ApplicationController
     newMessage = JSON.parse message_params
     digest = sha256.digest newMessage
     if digest == params[sig_service]
-      @message = Message.new(JSON.parse newMessage.inner_envelope)
+      message = JSON.parse newMessage.inner_envelope
+      @sender = User.find_by_identity(message.identity)
+      @recipient = User.find_by_identity(newMessage.identity)
+      @message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
+      if ((@sender) & (@recipient))
       if @message.save
         format.html { redirect_to @message, notice: 'Message was successfully updated.' }
         format.json { render :show, status: :ok, location: @message }
