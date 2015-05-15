@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get "/:identity", to: 'users#login'
   post "/", to: 'users#register'
   get 'users/:identity/pubkey', to: 'users#getPubKey'
+  get '/:identity/message/:message_id/:timestamp/:sig_message', to: 'messages#show'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

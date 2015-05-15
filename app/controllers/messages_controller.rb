@@ -6,7 +6,7 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @message = Message.find_by_sql("select id from messages where ????")
+    @message = Message.find_by_sql(['select id from messages '])
 
     # Beziehung zwischen Users und Messages unklar
     ## Inwiefern?
@@ -21,17 +21,37 @@ class MessagesController < ApplicationController
     #Woher nimmst du die identity, timestamp und sig_message?
     #Und was willst du genau mit sig_message machen? Den Parameter gibt es nicht in der
     # Datenbankzeigen
-    @message = Message.find_by_sql(["select identity,cipher,iv,key_recipient_enc,sig_recipient
+
+    #Parameter
+    #/(:identity)/message/(:message_id)/(:timestamp)/(:sig_message)
+
+    @json_msg = Message.find_by_sql(['select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
-                                    on m.recipient=id=user_id
+                                    on m.recipient_id=user_id
                                     where u.identity=?
-                                      and m.timestamp=?
+                                      and m.created_at=?
                                       and m.sig_message=?
-                                    ",identity,timestamp,sig_message])
+                                      and m.id = ?
+                                    ',identity,timestamp,sig_message,message_id])
+
+
+
+    # Ausgabe
+    #JSON{
+    #inner_envelope::JSON(2576 Byte)
+        #identity
+        #Cipher
+        #iv
+        #key_recipient_enc
+        #sig_recipient"
+    #sig_recipient::String(32 Byte)
+    #status_code::Integer (2 Byte)}
+
+    @inner_envelope = puts JSON.generate(@json_msg.sender_id,@json_msg.chipher,@json_msg.iv,@json_msg.key_recipient_enc,@json_msg.sig_recipient)
+    @message = puts JSON.generate(@inner_envelope,@json_msg.sig_recipient,100)
 
     respond_with(@message)
-
 
   end
 
@@ -62,8 +82,9 @@ class MessagesController < ApplicationController
         format.html { render :edit }
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end
+    end
+    end
   end
-
   # PATCH/PUT /messages/1
   # PATCH/PUT /messages/1.json
   def update
@@ -93,7 +114,7 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:identity, :inner_envelope, :sig_recipient,:timestamp)
+      params.require(:message).permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
 
     end
-end
+  end
