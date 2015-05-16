@@ -24,6 +24,13 @@ class MessagesController < ApplicationController
 
     #Parameter
     #/(:identity)/message/(:message_id)/(:timestamp)/(:sig_message)
+    ### dann musst du ein param[*] drumherum machen
+
+    ### sig_message ist unsere Signatur zur Überprüfung auf Man in the middle Angriffe
+    ### die braucht nicht in der Datenbank zu stehen.
+    ### Die wird geprüft und danach verworfen. Die interessiert nur ein mal.
+    ### Sig_Recipient hingegen braucht der Empfänger zur Überprüfung ob der Sender auch
+    ### der tatsächliche Sender ist.
 
     @json_msg = Message.find_by_sql(['select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
@@ -48,6 +55,9 @@ class MessagesController < ApplicationController
     #sig_recipient::String(32 Byte)
     #status_code::Integer (2 Byte)}
 
+
+    ### DRAN DENKEN! Wir müssen uns hinsetzen und Status Codes definieren.
+    ### Das hab ich voll verpennt fällt mir grade so auf :D
     @inner_envelope = puts JSON.generate(@json_msg.sender_id,@json_msg.chipher,@json_msg.iv,@json_msg.key_recipient_enc,@json_msg.sig_recipient)
     @message = puts JSON.generate(@inner_envelope,@json_msg.sig_recipient,100)
 
