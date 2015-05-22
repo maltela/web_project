@@ -39,7 +39,7 @@ class UsersController < ApplicationController
       if !(User.find_by_identity(@user.identity))
         respond_to do |format|
           if @user.save
-            format.html { redirect_to register_url, notice: 'User was successfully created.' }
+            format.html { notice 'User was successfully created.' }
             format.json { render :show, status: 110, location: @user }
           else
             format.html { render :new }
