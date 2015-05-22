@@ -18,9 +18,9 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def login
-    @user = User.find_by_sql(['select * from users Where identity like ?;', params[:identity]])
+    @user = User.find_by_sql(['select salt_masterkey from users Where identity like ?;', params[:identity]])
     if (@user)
-      respond_with(@user[:salt_masterkey], @user.privkey_user_enc, @user.pubkey_user, status: 100)
+      respond_with(@user.salt_masterkey, @user.privkey_user_enc, @user.pubkey_user, status: 100)
     else
       respond_with(status: 101)
     end
