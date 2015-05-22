@@ -5,9 +5,9 @@ Rails.application.routes.draw do
 
 
   # Use-Case 1
-  get "/:identity", to: 'users#login'
+  get '/:identity', to: 'users#login'
   # Use-Case 2
-  post "/", to: 'users#register'
+  post '/', to: 'users#register'
   # Use-Case 3
   get '/:identity/pubkey/', to: 'users#pubKey'
   # Use-Case 4
