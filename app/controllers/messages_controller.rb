@@ -12,7 +12,7 @@ class MessagesController < ApplicationController
     ## Inwiefern?
 
 
-    respond_with(@message)
+    respond_with(Base64.encode(@message))
   end
 
   # GET /messages/1
@@ -42,7 +42,7 @@ class MessagesController < ApplicationController
                                       and m.created_at=?
                                       and m.sig_message=?
                                       and m.id = ?
-                                    ',param[:identity],param[:timestamp],param[message_id]
+                                    ',param[:identity],param[:timestamp],param[:message_id]
                                     ])
 
 
@@ -64,7 +64,7 @@ class MessagesController < ApplicationController
     @inner_envelope = puts JSON.generate(@json_msg.sender_id,@json_msg.chipher,@json_msg.iv,@json_msg.key_recipient_enc,@json_msg.sig_recipient)
     @message = puts JSON.generate(@inner_envelope,@json_msg.sig_recipient,100)
 
-    respond_with(@message)
+    respond_with(Base64.encode(@message))
 
   end
 
@@ -80,7 +80,7 @@ class MessagesController < ApplicationController
    # POST /messages
   # POST /messages.json
   def create
-    newMessage = JSON.parse message_params
+    newMessage = JSON.parse Base64.decode(message_params)
     digest = sha256.digest newMessage
     if digest == params[sig_service]
       message = JSON.parse newMessage.inner_envelope
@@ -115,10 +115,14 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.json
   def destroy
-    @message.destroy
-    respond_to do |format|
-      format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
-      format.json { head :no_content }
+    newMessage = JSON.parse message_params.decode64
+    digest = sha256.digest newMessage
+    if digest == params[sig_service]
+      @message.destroy
+      respond_to do |format|
+        format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
+        format.json { head :no_content }
+      end
     end
   end
 
