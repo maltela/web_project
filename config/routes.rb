@@ -4,10 +4,21 @@ Rails.application.routes.draw do
   resources :messages
 
 
+  # Use-Case 1
   get "/:identity", to: 'users#login'
+  # Use-Case 2
   post "/", to: 'users#register'
-  get 'users/:identity/pubkey', to: 'users#getPubKey'
-  get '/:identity/message/:message_id/:timestamp/:sig_message', to: 'messages#show'
+  # Use-Case 3
+  get '/:identity/pubkey/', to: 'users#pubKey'
+  # Use-Case 4
+  get '/message/', to: 'messages#show'
+  # Use-Case 5
+  post '/:identity/message/'
+  # Use-Case 6
+  delete '/messsage/'
+  # Use-Case 7
+  post '/:identity/messages/'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
