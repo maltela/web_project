@@ -6,7 +6,7 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @message = Message.find_by_sql(['select id from messages '])
+    @message = Message.find_by_sql(['select id, sender_id from messages join users on m.recipient_id=user_id', param[:identity]])
 
     # Beziehung zwischen Users und Messages unklar
     ## Inwiefern?
@@ -32,6 +32,8 @@ class MessagesController < ApplicationController
     ### Sig_Recipient hingegen braucht der Empfänger zur Überprüfung ob der Sender auch
     ### der tatsächliche Sender ist.
 
+
+
     @json_msg = Message.find_by_sql(['select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
@@ -40,7 +42,8 @@ class MessagesController < ApplicationController
                                       and m.created_at=?
                                       and m.sig_message=?
                                       and m.id = ?
-                                    ',identity,timestamp,sig_message,message_id])
+                                    ',param[:identity],param[:timestamp],param[message_id]
+                                    ])
 
 
 
