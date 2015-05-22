@@ -83,9 +83,9 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     newMessage = JSON.parse Base64.decode(message_params)
-    digest = sha256.digest newMessage
-    if digest == params[sig_service]
-      message = JSON.parse newMessage.inner_envelope
+   # digest = sha256.digest newMessage
+   # if digest == params[sig_service]
+    #  message = JSON.parse newMessage.inner_envelope
       @sender = User.find_by_identity(message.identity)
       @recipient = User.find_by_identity(newMessage.identity)
       @message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
@@ -98,7 +98,7 @@ class MessagesController < ApplicationController
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end
     end
-    end
+   # end
   end
   # PATCH/PUT /messages/1
   # PATCH/PUT /messages/1.json
