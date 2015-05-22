@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   respond_to :html, :json
+  skip_before_action :verify_authenticity_token
   # GET /users
   # GET /users.json
   def index

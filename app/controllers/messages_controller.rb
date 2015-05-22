@@ -2,6 +2,8 @@ class MessagesController < ApplicationController
 
   respond_to :html, :json
 
+  skip_before_action :verify_authenticity_token
+
   #im respond_with muss noch ein error_Code ausgegeben werden
   # GET /messages
   # GET /messages.json
