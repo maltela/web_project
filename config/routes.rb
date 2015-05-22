@@ -11,13 +11,13 @@ Rails.application.routes.draw do
   # Use-Case 3
   get '/:identity/pubkey/', to: 'users#pubKey'
   # Use-Case 4
-  get '/message/', to: 'messages#show'
+  post '/message/', to: 'messages#create'
   # Use-Case 5
-  post '/:identity/message/'
+  post '/:identity/message/', to: 'messages#index'
   # Use-Case 6
-  delete '/messsage/'
+  delete '/messsage/', to: 'messages#destory'
   # Use-Case 7
-  post '/:identity/messages/'
+  post '/:identity/messages/', to: 'messages#show'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

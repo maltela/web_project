@@ -14,14 +14,19 @@
 ActiveRecord::Schema.define(version: 20150425104512) do
 
   create_table "messages", force: true do |t|
-    t.integer  "recipient_id"
-    t.integer  "sender_id"
-    t.string   "cipher"
-    t.string   "sig_recipient"
-    t.string   "iv"
-    t.string   "key_recipient_enc"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer "recipient_id"
+    t.integer "sender_id"
+    t.text    "cipher"
+    t.text    "sig_recipient"
+    t.text    "iv"
+    t.text    "key_recipient_enc"
+    t.text    "created_at"
+    t.text    "updated_at"
+    t.text    "timestamp"
+    t.text    "receiver"
+    t.text    "sig_service"
+    t.text    "sig_message"
+    t.text    "message_object"
   end
 
   create_table "users", primary_key: "user_id", force: true do |t|
@@ -32,7 +37,5 @@ ActiveRecord::Schema.define(version: 20150425104512) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "users", ["identity"], name: "index_users_on_identity", unique: true
 
 end
