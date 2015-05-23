@@ -20,7 +20,8 @@ class UsersController < ApplicationController
   def login
     @user = User.find_by_sql(['select salt_masterkey from users Where identity like ?;', params[:identity]])
     if (@user)
-      respond_with(@user.first.salt_masterkey, @user.first.privkey_user_enc, @user.first.pubkey_user)
+      respond_with(:salt_masterkey => @user.first.salt_masterkey)
+      #, @user.first.privkey_user_enc, @user.first.pubkey_user
     else
       respond_with(status: 101)
     end
