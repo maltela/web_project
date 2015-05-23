@@ -7,8 +7,16 @@ class MessagesController < ApplicationController
   #im respond_with muss noch ein error_Code ausgegeben werden
   # GET /messages
   # GET /messages.json
+
   def index
-    @message = Message.find_by_sql(['select id, sender_id from messages join users on m.recipient_id=user_id where users.identity = ?', params[:identity]])
+
+    #sql anpassen
+    @message = Message.find_by_sql(['select m.id, u.identity
+                                    from messages m
+                                    join users u
+                                    on m.recipient_id=user_id
+                                    where u.identity=?
+                                    ',params[:identity]])
 
     # Beziehung zwischen Users und Messages unklar
     ## Inwiefern?
@@ -26,7 +34,7 @@ class MessagesController < ApplicationController
                                     on m.recipient_id=user_id
                                     where u.identity=?
                                       and m.id = ?
-                                    ',param[:identity],param[:message_id]
+                                    ',params[:identity],params[:message_id]
                                     ])
 
 
