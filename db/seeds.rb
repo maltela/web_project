@@ -7,6 +7,6 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-
+User.create()
 Message.create(recipient_id: 1000,sender_id: 1001,cipher:'Geheimnachricht',sig_recipient:'Empfänger',iv:'IV',
 key_recipient_enc:'Text_KEY_REC_ENV')
