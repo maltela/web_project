@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     else
       @userdata = {:status => 101}
     end
-    respond_with @userdata
+    render json: @userdata.to_json
   end
 
   # GET /users/new
