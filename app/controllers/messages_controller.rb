@@ -8,7 +8,7 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @message = Message.find_by_sql(['select id, sender_id from messages join users on m.recipient_id=user_id where users.identity = ?', param[:identity]])
+    @message = Message.find_by_sql(['select id, sender_id from messages join users on m.recipient_id=user_id where users.identity = ?', params[:identity]])
 
     # Beziehung zwischen Users und Messages unklar
     ## Inwiefern?
