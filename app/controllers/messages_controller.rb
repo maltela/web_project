@@ -36,7 +36,7 @@ class MessagesController < ApplicationController
                                     ',params[:identity],params[:message_id]
                                     ])
 
-    render json:  @message.first
+    render json:  @json_msg.first
 
   end
 
