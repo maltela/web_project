@@ -19,14 +19,11 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def login
     @user = User.find_by_sql(['select * from users Where identity like ?;', params[:identity]])
-    @userdata = User.new
     if (@user)
-      @userdata =  {:salt_masterkey => @user.first.salt_masterkey, :privkey_user_enc => @user.first.privkey_user_enc, :pubkey_user => @user.first.pubkey_user, :status => 100}
-
+      respond_with(@user.first.salt_masterkey, @user.first.privkey_user_enc, @user.first.pubkey_user)
     else
-      @userdata = {:status => 101}
+      respond_with(status: 101)
     end
-    respond_with @userdata
   end
 
   # GET /users/new
