@@ -135,6 +135,6 @@ class MessagesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
       #params.permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
-      params.permit!
+      params.permit (:identity, :cipher, :iv, :key_recipient_enc, :sig_recipient, :timestamp ,:pubkey_user ,:sig_service)
     end
   end
