@@ -60,7 +60,8 @@ class MessagesController < ApplicationController
       @message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
       if ((@sender) && (@recipient))
       if @message.save
-        respond_to.json { render :show, status: 110, location: @user }
+        @status_code = {:status_code => 110}
+        respond_to.json { render json: @status_code}
       else
         respond_to.json { render json: @message.errors, status: 119 }
       end
