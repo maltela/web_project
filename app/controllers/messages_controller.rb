@@ -53,8 +53,8 @@ class MessagesController < ApplicationController
    # digest = sha256.digest newMessage
    # if digest == params[sig_service]
     #  message = JSON.parse newMessage.inner_envelope
-      @sender = User.find_by_identity(params[:identity])
-      @recipient = User.find_by_identity(params[:identity])
+      @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:identity]])
+      @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:identity]])
       #@recipient = User.find_by_identity(newMessage.identity)
       #@message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
       @message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
