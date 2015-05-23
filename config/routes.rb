@@ -13,11 +13,11 @@ Rails.application.routes.draw do
   # Use-Case 4
   post '/message/', to: 'messages#create'
   # Use-Case 5
-  post '/:identity/message/', to: 'messages#index'
+  post '/:identity/message/', to: 'messages#showMessage'
   # Use-Case 6
   delete '/messsage/', to: 'messages#destory'
   # Use-Case 7
-  post '/:identity/messages/', to: 'messages#show'
+  post '/:identity/messages/', to: 'messages#showAll'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

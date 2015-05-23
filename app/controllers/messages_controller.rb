@@ -8,7 +8,7 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
 
-  def index
+  def showAll
 
     #sql anpassen
     @message = Message.find_by_sql(['select m.id, u.identity
@@ -27,7 +27,7 @@ class MessagesController < ApplicationController
 
   # GET /messages/1
   # GET /messages/1.json
-  def show
+  def showMessage
     @json_msg = Message.find_by_sql(['select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
@@ -38,10 +38,9 @@ class MessagesController < ApplicationController
                                     ])
 
 
-    @inner_envelope = puts JSON.generate(@json_msg.first.sender_id,@json_msg.first.chipher,@json_msg.first.iv,@json_msg.first.key_recipient_enc,@json_msg.first.sig_recipient)
-    @message = puts JSON.generate(@inner_envelope,@json_msg.first.sig_recipient,100)
+    @message = puts JSON.generate(@json_msg , :status_code => 100)
 
-    render json:  Base64.encode(@message)
+    render json:  @message
 
   end
 
