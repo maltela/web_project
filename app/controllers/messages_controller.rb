@@ -60,11 +60,11 @@ class MessagesController < ApplicationController
       @message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
       if ((@sender) && (@recipient))
       if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully updated.' }
-        format.json { render :show, status: :ok, location: @message }
+        format.html { notice 'User was successfully created.' }
+        format.json { render :show, status: 110, location: @user }
       else
-        format.html { render :edit }
-        format.json { render json: @message.errors, status: :unprocessable_entity }
+        format.html { render :new }
+        format.json { render json: @message.errors, status: 119 }
       end
     end
    # end
