@@ -20,53 +20,20 @@ class MessagesController < ApplicationController
   # GET /messages/1
   # GET /messages/1.json
   def show
-    #Woher nimmst du die identity, timestamp und sig_message?
-    #Und was willst du genau mit sig_message machen? Den Parameter gibt es nicht in der
-    # Datenbankzeigen
-
-    #Parameter
-    #/(:identity)/message/(:message_id)/(:timestamp)/(:sig_message)
-    ### dann musst du ein param[*] drumherum machen
-
-    ### sig_message ist unsere Signatur zur Überprüfung auf Man in the middle Angriffe
-    ### die braucht nicht in der Datenbank zu stehen.
-    ### Die wird geprüft und danach verworfen. Die interessiert nur ein mal.
-    ### Sig_Recipient hingegen braucht der Empfänger zur Überprüfung ob der Sender auch
-    ### der tatsächliche Sender ist.
-
-
-
     @json_msg = Message.find_by_sql(['select identity,cipher,iv,key_recipient_enc,sig_recipient
                                     from messages m
                                     join users u
                                     on m.recipient_id=user_id
                                     where u.identity=?
-                                      and m.created_at=?
-                                      and m.sig_message=?
                                       and m.id = ?
-                                    ',param[:identity],param[:timestamp],param[:message_id]
+                                    ',param[:identity],param[:message_id]
                                     ])
 
 
+    @inner_envelope = puts JSON.generate(@json_msg.first.sender_id,@json_msg.first.chipher,@json_msg.first.iv,@json_msg.first.key_recipient_enc,@json_msg.first.sig_recipient)
+    @message = puts JSON.generate(@inner_envelope,@json_msg.first.sig_recipient,100)
 
-    # Ausgabe
-    #JSON{
-    #inner_envelope::JSON(2576 Byte)
-        #identity
-        #Cipher
-        #iv
-        #key_recipient_enc
-        #sig_recipient"
-    #sig_recipient::String(32 Byte)
-    #status_code::Integer (2 Byte)}
-
-
-    ### DRAN DENKEN! Wir müssen uns hinsetzen und Status Codes definieren.
-    ### Das hab ich voll verpennt fällt mir grade so auf :D
-    @inner_envelope = puts JSON.generate(@json_msg.sender_id,@json_msg.chipher,@json_msg.iv,@json_msg.key_recipient_enc,@json_msg.sig_recipient)
-    @message = puts JSON.generate(@inner_envelope,@json_msg.sig_recipient,100)
-
-    respond_with(Base64.encode(@message))
+    render json:  Base64.encode(@message)
 
   end
 
