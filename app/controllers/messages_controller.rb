@@ -53,7 +53,7 @@ class MessagesController < ApplicationController
    # digest = sha256.digest newMessage
    # if digest == params[sig_service]
       #message = params[:inner_envelope]
-      @sender = User.find_by_sql(['select * from users Where identity like ?;', message.sender])
+      @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope[:sender]]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
       #@recipient = User.find_by_identity(newMessage.identity)
       @message = Message.new(:cipher => params[:inner_envelope].cipher, :sig_recipient => params[:inner_envelope].sig_recipient, :iv => params[:inner_envelope].iv, :key_recipient_enc => params[:inner_envelope].key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
