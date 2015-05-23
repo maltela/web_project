@@ -58,7 +58,7 @@ class MessagesController < ApplicationController
       #@recipient = User.find_by_identity(newMessage.identity)
       #@message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
       @message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
-      if ((@sender) & (@recipient))
+      if ((@sender) && (@recipient))
       if @message.save
         format.html { redirect_to @message, notice: 'Message was successfully updated.' }
         format.json { render :show, status: :ok, location: @message }
