@@ -50,13 +50,14 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     #newMessage = JSON.parse message_params
-    message = message_params
    # digest = sha256.digest newMessage
    # if digest == params[sig_service]
     #  message = JSON.parse newMessage.inner_envelope
-      @sender = User.find_by_identity(message.identity)
-      @recipient = User.find_by_identity(newMessage.identity)
-      @message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
+      @sender = User.find_by_identity(message_params[identity])
+      @recipient = User.find_by_identity(message_params[identity])
+      #@recipient = User.find_by_identity(newMessage.identity)
+      #@message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
+      @message = Message.new (:cipher => message_params[cipher], :sig_recipient => message_params[sig_recipient], :iv => message_params[iv], :key_recipient_enc => message_params[key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
       if ((@sender) & (@recipient))
       if @message.save
         format.html { redirect_to @message, notice: 'Message was successfully updated.' }
