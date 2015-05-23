@@ -59,11 +59,15 @@ class MessagesController < ApplicationController
       #@message = Message.new(:cipher => message.cipher, :sig_recipient => message.sig_recipient, :iv => message.iv, :key_recipient_enc => message.key_recipient_enc, :sender_id => @sender.user_id, :recipient_id => @recipient.user_id)
       @message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
       if ((@sender) && (@recipient))
-      if @message.save
-        @status_code = {:status_code => 110}
-        respond_to.json { render json: @status_code}
-      else
-        respond_to.json { render json: @message.errors, status: 119 }
+      respond_to do |format|
+        if @message.save
+          @status_code = {:status_code => 110}
+          format.html { notice 'Message was successfully saved.' }
+          format.json  { render json: @status_code}
+        else
+          format.html { notice 'Could not save Message' }
+          format.json  { render json: @message.errors, status: 119 }
+        end
       end
     end
    # end
