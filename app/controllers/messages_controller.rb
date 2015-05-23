@@ -62,10 +62,8 @@ class MessagesController < ApplicationController
       respond_to do |format|
         if @message.save
           @status_code = {:status_code => 110}
-          format.html { notice 'Message was successfully saved.' }
           format.json  { render json: @status_code}
         else
-          format.html { notice 'Could not save Message' }
           format.json  { render json: @message.errors, status: 119 }
         end
       end
