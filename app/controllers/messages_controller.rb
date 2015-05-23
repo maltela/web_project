@@ -82,7 +82,7 @@ class MessagesController < ApplicationController
    # POST /messages
   # POST /messages.json
   def create
-    newMessage = JSON.parse Base64.decode(message_params)
+    newMessage = JSON.parse message_params
    # digest = sha256.digest newMessage
    # if digest == params[sig_service]
     #  message = JSON.parse newMessage.inner_envelope
@@ -133,7 +133,7 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
+      #params.permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
 
     end
   end

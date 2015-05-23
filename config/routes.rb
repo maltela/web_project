@@ -4,11 +4,11 @@ Rails.application.routes.draw do
   resources :messages
 
 
-  # Use-Case 1
+  # Use-Case 1 - check
   get '/:identity', to: 'users#login'
-  # Use-Case 2
+  # Use-Case 2 - check
   post '/', to: 'users#register'
-  # Use-Case 3
+  # Use-Case 3 - check
   get '/:identity/pubkey/', to: 'users#pubKey'
   # Use-Case 4
   post '/message/', to: 'messages#create'
