@@ -83,7 +83,7 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     #newMessage = JSON.parse message_params
-    message = JSON.parse message_params.body.read
+    message = JSON.parse request.body.read
    # digest = sha256.digest newMessage
    # if digest == params[sig_service]
     #  message = JSON.parse newMessage.inner_envelope
