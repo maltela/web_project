@@ -16,7 +16,7 @@ class MessagesController < ApplicationController
                                           on m.recipient_id= u.user_id
                                       join users send
                                           on m.sender_id = send.user_id
-                                      where recipient = ?;
+                                      where u.identity = ?;
                                     ',params[:identity]])
 
 
