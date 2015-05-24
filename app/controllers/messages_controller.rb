@@ -10,7 +10,6 @@ class MessagesController < ApplicationController
 
   def showAll
 
-    #sql anpassen
     @message = Message.find_by_sql(['select m.id, u.identity as recipient, send.identity as sender
                                       from messages m
                                       join users u
@@ -20,10 +19,8 @@ class MessagesController < ApplicationController
                                       where recipient = ?;
                                     ',params[:identity]])
 
-    # Beziehung zwischen Users und Messages unklar
-    ## Inwiefern?
 
-    render json: @message.to_json
+    render json: @message
   end
 
   # GET /messages/1
