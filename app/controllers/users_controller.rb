@@ -36,20 +36,17 @@ class UsersController < ApplicationController
   # POST /users.json
   def register
     @user = User.new(user_params)
-
     respond_to do |format|
       if !(User.find_by_identity(@user.identity))
         respond_to do |format|
           if @user.save
-            format.html { notice 'User was successfully created.' }
-            format.json { render :show, status: 110, location: @user }
+            @status_code = {:status_code => 110}
+            format.json  { render json: @status_code}
           else
-            format.html { render :new }
             format.json { render json: @user.errors, status: 119 }
           end
         end
       end
-      format.html { render :new }
       format.json { render json: @user.errors, status: 111}
       end
 
