@@ -55,8 +55,9 @@ class MessagesController < ApplicationController
       #message = params[:inner_envelope]
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
-      sig_service = {:envelope => params[:inner_envelope], :recipient => params[:recipient]}
-      digest = OpenSSL::HMAC.hexdigest('sha256',@sender.first.privkey_user_enc, sig_service).to_string
+      service = {:envelope => params[:inner_envelope], :recipient => params[:recipient]}
+      digest = OpenSSL::Digest.new('sha256')
+      sig_service = OpenSSL::HMAC.hexdigest(digest, @sender.first.privkey_user_enc, sig_service)
       #@recipient = User.find_by_identity(newMessage.identity)
      #@message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
       if ((@sender) && (@recipient))
