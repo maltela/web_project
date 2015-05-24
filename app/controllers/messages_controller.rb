@@ -37,10 +37,13 @@ class MessagesController < ApplicationController
                                       and m.id = ?
                                     ',params[:identity],params[:message_id]
                                     ])
-    @json_msg.first.update(:read => true)
-
-    render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
-
+    if (@json_msg)
+      @json_msg.first.update(:read => true)
+      render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
+    else
+      @status_code = {:status_code => 451}
+      render json: @status_code.to_json
+    end
   end
 
   # GET /messages/new
