@@ -46,8 +46,9 @@ class UsersController < ApplicationController
             format.json { render json: @user.errors, status: 119 }
           end
         end
+      else
+        format.json { render json: @user.errors, status: 111}
       end
-      format.json { render json: @user.errors, status: 111}
       end
 
   end
