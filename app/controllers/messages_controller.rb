@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
                                       where u.identity = ?;
                                     ',params[:identity]])
 
-    render json: @messages.to_json(only: [:message_id, :sender])
+    render json: @messages.to_json(only: [:message_id, :sender[:identity]])
   end
 
   # GET /messages/1
