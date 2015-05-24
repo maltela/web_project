@@ -39,7 +39,7 @@ class MessagesController < ApplicationController
                                     ])
     Message.update
 
-    render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc)
+    render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
 
   end
 
