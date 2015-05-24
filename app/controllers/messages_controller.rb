@@ -10,7 +10,7 @@ class MessagesController < ApplicationController
 
   def showAll
 
-    @messages = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as identitySender, m.recipient_id,
+    @messages = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as identity, m.recipient_id,
                                       sender_id, cipher, sig_recipient, iv, key_recipient_enc
                                       from messages m
                                       join users u
@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
                                       where u.identity = ?;
                                     ',params[:identity]])
 
-    render json: @messages.to_json(only: [:message_id, :identitySender])
+    render json: @messages.to_json(only: [:message_id, :identity])
   end
 
   # GET /messages/1
