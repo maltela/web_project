@@ -7,7 +7,7 @@ class CreateMessages < ActiveRecord::Migration
       t.string :sig_recipient
       t.string :iv
       t.string :key_recipient_enc
-      t.boolean :read
+      t.boolean :read, :default => false
       t.timestamps
     end
   end
