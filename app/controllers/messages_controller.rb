@@ -37,7 +37,7 @@ class MessagesController < ApplicationController
                                       and m.id = ?
                                     ',params[:identity],params[:message_id]
                                     ])
-    Message.update
+    @json_msg.first.update(:read => true)
 
     render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
 
