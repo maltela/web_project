@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20150425104512) do
     t.string   "sig_recipient"
     t.string   "iv"
     t.string   "key_recipient_enc"
-    t.boolean  "read"
+    t.boolean  "read", :defauls => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
