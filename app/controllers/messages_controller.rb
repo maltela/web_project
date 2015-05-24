@@ -10,7 +10,8 @@ class MessagesController < ApplicationController
 
   def showAll
 
-    @messages = Message.find_by_sql(['select *
+    @messages = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as sender, m.recipient_id
+                                      sender_id, cipher, sig_recipient, iv, key_recipient
                                       from messages m
                                       join users u
                                           on m.recipient_id= u.user_id
