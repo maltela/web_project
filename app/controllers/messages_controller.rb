@@ -56,14 +56,14 @@ class MessagesController < ApplicationController
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
       sig_service = {:envelope => params[:inner_envelope], :recipient => params[:recipient]}
-      OpenSSL::HMAC.hexdigest('sha256',@sender.first.privkey_user_enc, sig_service)
+      digest = OpenSSL::HMAC.hexdigest('sha256',@sender.first.privkey_user_enc, sig_service)
       #@recipient = User.find_by_identity(newMessage.identity)
      #@message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
       if ((@sender) && (@recipient))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         respond_to do |format|
         if @message.save
-          @status_code = {:status_code => sig_service}
+          @status_code = {:status_code => Base64.encode(digest)}
           format.json  { render json: @status_code}
         else
           format.json  { render json: @message.errors, status: 119 }
