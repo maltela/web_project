@@ -28,10 +28,7 @@ class UsersController < ApplicationController
     render json: @userdata.to_json
   end
 
-  # GET /users/new
-  def new
-    @user = User.new
-  end
+
   # POST /users
   # POST /users.json
   def register

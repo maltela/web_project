@@ -46,31 +46,24 @@ class MessagesController < ApplicationController
     end
   end
 
-  # GET /messages/new
-  def new
-    @message = Message.new
-  end
-
-  # GET /messages/1/edit
-  def edit
-  end
-
    # POST /messages
   # POST /messages.json
   def create
-    #newMessage = JSON.parse message_params
+
    # digest = sha256.digest newMessage
    # if digest == params[sig_service]
       #message = params[:inner_envelope]
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
+      sig_service = {:envelope => params[:inner_envelope], :recipient => params[:recipient]}
+      OpenSSL::HMAC.hexdigest('sha256',@sender.privkey_user_enc, sig_service)
       #@recipient = User.find_by_identity(newMessage.identity)
      #@message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
       if ((@sender) && (@recipient))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         respond_to do |format|
         if @message.save
-          @status_code = {:status_code => 110}
+          @status_code = {:status_code => sig_service}
           format.json  { render json: @status_code}
         else
           format.json  { render json: @message.errors, status: 119 }
@@ -81,17 +74,6 @@ class MessagesController < ApplicationController
   end
   # PATCH/PUT /messages/1
   # PATCH/PUT /messages/1.json
-  def update
-    respond_to do |format|
-      if @message.update(message_params)
-        format.html { redirect_to @message, notice: 'Message was successfully updated.' }
-        format.json { render :show, status: :ok, location: @message }
-      else
-        format.html { render :edit }
-        format.json { render json: @message.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # DELETE /messages/1
   # DELETE /messages/1.json
