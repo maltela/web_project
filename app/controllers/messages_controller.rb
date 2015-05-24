@@ -23,7 +23,7 @@ class MessagesController < ApplicationController
     # Beziehung zwischen Users und Messages unklar
     ## Inwiefern?
 
-    render json: @message
+    render json: @message.to_json
   end
 
   # GET /messages/1
@@ -40,7 +40,7 @@ class MessagesController < ApplicationController
                                     ',params[:identity],params[:message_id]
                                     ])
 
-    render json:  @json_msg.first
+    render json:  @json_msg.first.to_json
 
   end
 
