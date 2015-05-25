@@ -9,7 +9,8 @@ class MessagesController < ApplicationController
   # GET /messages.json
 
   def showAll
-
+    @status_code = {:status_code => 421}#Verifizierung
+    @status_code = {:status_code => 422}#Timeout
     @messages = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as identity, m.recipient_id,
                                       sender_id, cipher, sig_recipient, iv, key_recipient_enc, read
                                       from messages m
@@ -19,13 +20,19 @@ class MessagesController < ApplicationController
                                           on m.sender_id = send.user_id
                                       where u.identity = ?;
                                     ',params[:identity]])
-
-    render json: @messages.to_json(only: [:message_id, :identity, :read])
+    if (@messages.first)
+      render json: @messages.to_json(only: [:message_id, :identity, :read])
+    else
+      @status_code = {:status_code => 420}
+      render json: @status_code.to_json
+    end
   end
 
   # GET /messages/1
   # GET /messages/1.json
   def showMessage
+    @status_code = {:status_code => 421}#Verifizierung
+    @status_code = {:status_code => 422}#Timeout
     @json_msg = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as identity, m.recipient_id,
                                       sender_id, cipher, sig_recipient, iv, key_recipient_enc, read
                                       from messages m
@@ -41,7 +48,7 @@ class MessagesController < ApplicationController
       Message.find_by_sql(['Select * from messages where id = ?', params[:message_id]]).first.update_attribute(:read, true)
       render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
     else
-      @status_code = {:status_code => 451}
+      @status_code = {:status_code => 423}
       render json: @status_code.to_json
     end
   end
@@ -60,13 +67,16 @@ class MessagesController < ApplicationController
       if ((@sender) && (@recipient))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         respond_to do |format|
-        if @message.save
-          @status_code = {:status_code => Base64.encode(digest)}
-          format.json  { render json: @status_code}
-        else
-          format.json  { render json: @message.errors, status: 119 }
+          if @message.save
+            @status_code = {:status_code => 122}
+            format.json  { render json: @status_code}
+          else
+            format.json  { render json: @message.errors, status: 425 }
+          end
         end
-      end
+      else
+        @status_code = {:status_code => 424}
+        render json: @status_code.to_json
     end
    # end
   end
@@ -76,15 +86,20 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.json
   def destroy
-    newMessage = JSON.parse message_params.decode64
-    digest = sha256.digest newMessage
-    if digest == params[sig_service]
-      @message.destroy
-      respond_to do |format|
-        format.html { redirect_to messages_url, notice: 'Message was successfully destroyed.' }
-        format.json { head :no_content }
+    #newMessage = JSON.parse message_params.decode64
+    #digest = sha256.digest newMessage
+    #if digest == params[sig_service]
+    @message = Message.find_by_sql("Select* From messages where id = ?", params[:message_id])
+    if (@message)
+      if (@message.destroy)
+        @status_code = {:status_code => 124}
+      else
+        @status_code = {:status_code => 426}
       end
+    else
+      @status_code = {:status_code => 427}
     end
+    render json: @status_code.to_json
   end
 
   private

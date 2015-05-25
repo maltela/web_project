@@ -5,13 +5,19 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     @users = User.all
+    if (user.first)
+      render json: @users.to_json(only: [:identity, :pubkey_user])
+    else
+      @status_code = {:status_code => 413}
+      render json: @status_code
+    end
   end
   def pubKey
     @user = User.find_by_identity(params[:identity])
     if (@user)
-      @pubkey = {:pubkey_user => @user.pubkey_user, :status => 200}
+      @pubkey = {:pubkey_user => @user.pubkey_user, :status_code => 112}
     else
-      @pubkey = {:status => "400"}
+      @pubkey = {:status_code => 411}
     end
     render json: @pubkey.to_json
   end
@@ -21,9 +27,9 @@ class UsersController < ApplicationController
   def login
     @user = User.find_by_sql(['select * from users Where identity like ?;', params[:identity]])
     if (@user)
-      @userdata =  {:salt_masterkey => @user.first.salt_masterkey, :privkey_user_enc => @user.first.privkey_user_enc, :pubkey_user => @user.first.pubkey_user, :status => 200}
+      @userdata =  {:salt_masterkey => @user.first.salt_masterkey, :privkey_user_enc => @user.first.privkey_user_enc, :pubkey_user => @user.first.pubkey_user, :status => 111}
     else
-      @userdata = {:status => 101}
+      @userdata = {:status => 411}
     end
     render json: @userdata.to_json
   end
@@ -37,10 +43,10 @@ class UsersController < ApplicationController
           if @user.save
             @status_code = {:status_code => 110}
           else
-            @status_code = {:status_code => 119}
+            @status_code = {:status_code => 412}
           end
       else
-        @status_code ={:status_code => 111}
+        @status_code ={:status_code => 410}
       end
       render json: @status_code.to_json
 
