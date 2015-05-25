@@ -38,7 +38,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def register
-    @user = User.new(user_params)
+    @user = User.new(:identity => params[:identity], :salt_masterkey => params[:salt_masterkey], :pubkey_user => params[:pubkey_user], :privkey_user_enc => Base64.decode(params[:privkey_user_enc]))
       if !(User.find_by_identity(@user.identity))
           if @user.save
             @status_code = {:status_code => 110}
