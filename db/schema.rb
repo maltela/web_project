@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20150425104512) do
   create_table "messages", force: true do |t|
     t.integer  "recipient_id"
     t.integer  "sender_id"
-    t.string   "cipher"
+    t.string   "cipher",             limit: 2500
     t.string   "sig_recipient"
     t.string   "iv"
     t.string   "key_recipient_enc", limit: 500

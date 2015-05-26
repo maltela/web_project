@@ -59,12 +59,7 @@ class MessagesController < ApplicationController
 
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
-      #service = {:envelope => params[:inner_envelope], :recipient => params[:recipient]}
-      #service = JSON.parse(service.to_json)
-      #digest = OpenSSL::Digest.new('sha256')
-      #sig_service = OpenSSL::HMAC.hexdigest(digest, @sender.first.privkey_user_enc, service)
-     #@message = Message.new(:cipher => params[:cipher], :sig_recipient => params[:sig_recipient], :iv => params[:iv], :key_recipient_enc => params[:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id)
-      if ((@sender) && (@recipient))
+     if ((@sender) && (@recipient))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         respond_to do |format|
           if @message.save
@@ -108,6 +103,17 @@ class MessagesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
       params.permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
-      #params.permit(:identity, :cipher, :iv, :key_recipient_enc, :sig_recipient, :timestamp, :pubkey_user, :sig_service)
+    end
+
+    def verify_user(key, message, signature)
+      timestamp  = Time.now.to_i
+
+      tmpsig = OpenSSL::HMAC.hexdigest('sha256', Base64.decode64(key), message)
+
+      if (((timestamp-params[:timestamp])<=5) && (tmpsig == Base64.decode64(signature)))
+        return true
+      else
+        return false
+      end
     end
   end

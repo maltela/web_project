@@ -64,4 +64,17 @@ class UsersController < ApplicationController
     def user_params
       params.permit(:identity, :salt_masterkey, :pubkey_user, :privkey_user_enc)
     end
+
+    def verify_user(key, message, signature)
+      timestamp  = Time.now.to_i
+
+      tmpsig = OpenSSL::HMAC.hexdigest('sha256', Base64.decode64(key), message)
+
+      if (((timestamp-params[:timestamp])<=5) && (tmpsig == Base64.decode64(signature)))
+        return true
+      else
+        return false
+      end
+    end
 end
+
