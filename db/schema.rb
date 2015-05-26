@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(version: 20150425104512) do
     t.string   "cipher"
     t.string   "sig_recipient"
     t.string   "iv"
-    t.string   "key_recipient_enc"
-    t.boolean  "read"
+    t.string   "key_recipient_enc", limit: 500
+    t.boolean  "read",                          default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(version: 20150425104512) do
   create_table "users", primary_key: "user_id", force: true do |t|
     t.string   "identity"
     t.string   "salt_masterkey"
-    t.string   "pubkey_user"
-    t.string   "privkey_user_enc"
+    t.string   "pubkey_user",      limit: 500
+    t.string   "privkey_user_enc", limit: 500
     t.datetime "created_at"
     t.datetime "updated_at"
   end
