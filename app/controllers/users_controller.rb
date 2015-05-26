@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   require "base64"
   # GET /users
   # GET /users.json
-  def index
+  def getAll
     @users = User.all
     if (user.first)
       render json: @users.to_json(only: [:identity, :pubkey_user])
