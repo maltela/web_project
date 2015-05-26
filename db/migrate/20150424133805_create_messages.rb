@@ -3,7 +3,7 @@ class CreateMessages < ActiveRecord::Migration
     create_table :messages do |t|
       t.integer :recipient_id
       t.integer :sender_id
-      t.string :cipher
+      t.string :cipher, :limit => 2500
       t.string :sig_recipient
       t.string :iv
       t.string :key_recipient_enc, :limit => 500
