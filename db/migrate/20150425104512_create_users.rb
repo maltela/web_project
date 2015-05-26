@@ -5,8 +5,8 @@ class CreateUsers < ActiveRecord::Migration
       t.index :identity, :unique=>true
       t.string :identity
       t.string :salt_masterkey
-      t.string :pubkey_user
-      t.string :privkey_user_enc
+      t.string :pubkey_user, :limit => 500
+      t.string :privkey_user_enc, :limit => 500
       t.timestamps
     end
   end

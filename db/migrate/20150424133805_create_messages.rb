@@ -6,7 +6,7 @@ class CreateMessages < ActiveRecord::Migration
       t.string :cipher
       t.string :sig_recipient
       t.string :iv
-      t.string :key_recipient_enc
+      t.string :key_recipient_enc, :limit => 500
       t.boolean :read, :default => false
       t.timestamps
     end
