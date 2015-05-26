@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users.json
   def getAll
     @users = User.all
-    if (user.first)
+    if (@users.first)
       render json: @users.to_json(only: [:identity, :pubkey_user])
     else
       @status_code = {:status_code => 413}
