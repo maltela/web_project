@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   resources :messages
 
 
+  # Use-Case 0
+  get '/all', to: 'users#getAll'
   # Use-Case 1 - check
   get '/:identity', to: 'users#login'
   # Use-Case 2 - check
@@ -18,8 +20,6 @@ Rails.application.routes.draw do
   delete '/messsage/', to: 'messages#destory'
   # Use-Case 7
   post '/:identity/messages/', to: 'messages#showAll'
-  # Use-Case 8
-  get '/all', to: 'users#getAll'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
