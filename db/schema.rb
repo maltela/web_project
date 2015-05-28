@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 20150425104512) do
     t.string   "identity"
     t.string   "salt_masterkey"
     t.string   "pubkey_user",      limit: 500
-    t.string   "privkey_user_enc", limit: 2000
+    t.string   "privkey_user_enc", limit: 2300
     t.datetime "created_at"
     t.datetime "updated_at"
   end
