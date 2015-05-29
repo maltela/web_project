@@ -91,7 +91,7 @@ class MessagesController < ApplicationController
     #newMessage = JSON.parse message_params.decode64
     #digest = sha256.digest newMessage
     #if digest == params[sig_service]
-    @message = Message.find_by_sql("Select* From messages where id = ?", params[:message_id])
+    @message = Message.find_by_sql(["Select* From messages where id = ?", params[:message_id]])
     if (@message)
       if (@message.destroy)
         @status_code = {:status_code => 124}
