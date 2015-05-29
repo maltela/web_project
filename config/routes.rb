@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   # Use-Case 5
   post '/:identity/message/', to: 'messages#showMessage'
   # Use-Case 6
-  delete '/messsage/', to: 'messages#destory'
+  delete '/messsage/', to: 'messages#destroy'
   # Use-Case 7
   post '/:identity/messages/', to: 'messages#showAll'
 
