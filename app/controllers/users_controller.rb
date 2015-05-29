@@ -70,7 +70,7 @@ class UsersController < ApplicationController
 
       tmpsig = OpenSSL::HMAC.hexdigest('sha256', Base64.decode64(key), message)
 
-      if (((timestamp-params[:timestamp])<=5) && (tmpsig == Base64.decode64(signature)))
+      if ((((timestamp-params[:timestamp])/ 1.minute)<=5) && (tmpsig == Base64.decode64(signature)))
         return true
       else
         return false

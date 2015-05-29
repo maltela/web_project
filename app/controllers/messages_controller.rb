@@ -93,7 +93,7 @@ class MessagesController < ApplicationController
     #if digest == params[sig_service]
     @message = Message.find_by_sql(["Select* From messages where id = ?", params[:message_id]])
     if (@message)
-      if (@message.destroy)
+      if (@message.first.destroy)
         @status_code = {:status_code => 124}
       else
         @status_code = {:status_code => 426}
@@ -117,7 +117,7 @@ class MessagesController < ApplicationController
 
       tmpsig = OpenSSL::HMAC.hexdigest('sha256', Base64.decode64(key), message)
 
-      if (((timestamp-params[:timestamp])<=5) && (tmpsig == Base64.decode64(signature)))
+      if ((((timestamp-params[:timestamp])/ 1.minute)<=5) && (tmpsig == Base64.decode64(signature)))
         return true
       else
         return false
