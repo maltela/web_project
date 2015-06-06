@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
   def pubKey
     @user = User.find_by_identity(params[:identity])
-    if (User.find_by_identity(@user.first.identity))
+    if (User.find_by_identity(@user.identity))
       @pubkey = {:pubkey_user => @user.pubkey_user, :status_code => 112}
     else
       @pubkey = {:status_code => 411}
