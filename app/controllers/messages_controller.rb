@@ -9,8 +9,7 @@ class MessagesController < ApplicationController
   # GET /messages.json
 
   def showAll
-    @status_code = {:status_code => 421}#Verifizierung
-    @status_code = {:status_code => 422}#Timeout
+    message = params[:identity] + params[:timestamp]
     @messages = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as identity, m.recipient_id,
                                       sender_id, cipher, sig_recipient, iv, key_recipient_enc, read
                                       from messages m
@@ -31,8 +30,6 @@ class MessagesController < ApplicationController
   # GET /messages/1
   # GET /messages/1.json
   def showMessage
-    @status_code = {:status_code => 421}#Verifizierung
-    @status_code = {:status_code => 422}#Timeout
     @json_msg = Message.find_by_sql(['select m.id as message_id, u.identity as recipient, send.identity as identity, m.recipient_id,
                                       sender_id, cipher, sig_recipient, iv, key_recipient_enc, read
                                       from messages m
@@ -56,11 +53,11 @@ class MessagesController < ApplicationController
    # POST /messages
   # POST /messages.json
   def create
-    @status_code = {:status_code => 421}#Verifizierung
-    @status_code = {:status_code => 422}#Timeout
+    #@status_code = {:status_code => 421}#Verifizierung
+    #@status_code = {:status_code => 422}#Timeout
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
-     if ((User.find_by_identity(@sender.identity)) && User.find_by_identity(@recipient.identity))
+     if ((User.find_by_identity(@sender.first.identity)) && User.find_by_identity(@recipient.first.identity))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         if (@message)
           respond_to do |format|
@@ -112,10 +109,16 @@ class MessagesController < ApplicationController
       params.permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
     end
 
-    def verify_user(key, message, signature)
+    def verify_user(key, message, signature, iv)
       timestamp  = Time.now.to_i
 
-      tmpsig = OpenSSL::HMAC.hexdigest('sha256', Base64.decode64(key), message)
+      sha256 = Digest::SHA2.new(256)
+      aes = OpenSSL::Cipher.new("AES-256-CFB")
+      key = sha256.digest(key)
+
+      aes.decrypt
+      aes.key = key
+      aes.iv = iv
 
       if ((((timestamp-params[:timestamp])/ 1.minute)<=5) && (tmpsig == Base64.decode64(signature)))
         return true
