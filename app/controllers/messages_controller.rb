@@ -64,6 +64,7 @@ class MessagesController < ApplicationController
 
       sig_service = params[:recipient].to_s + params[:inner_envelope][:sender].to_s + Base64.decode64(params[:inner_envelope][:cipher]) + Base64.decode64(params[:inner_envelope][:iv]) + Base64.decode64(params[:inner_envelope][:key_recipient_enc]) + params[:timestamp].to_s
       @sender = User.find_by_identity(params[:inner_envelope][:sender])
+      puts sig_service
       @recipient = User.find_by_identity(params[:recipient])
       digest = OpenSSL::Digest::SHA256.new
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@recipient.pubkey_user))
