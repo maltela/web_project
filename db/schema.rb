@@ -17,9 +17,9 @@ ActiveRecord::Schema.define(version: 20150425104512) do
     t.integer  "recipient_id"
     t.integer  "sender_id"
     t.string   "cipher",             limit: 20000
-    t.string   "sig_recipient"
-    t.string   "iv",                 limit: 500
-    t.string   "key_recipient_enc", limit: 800
+    t.string   "sig_recipient",      limit: 1200
+    t.string   "iv",                 limit: 1200
+    t.string   "key_recipient_enc", limit: 1200
     t.boolean  "read",                          default: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20150425104512) do
   create_table "users", primary_key: "user_id", force: true do |t|
     t.string   "identity"
     t.string   "salt_masterkey"
-    t.string   "pubkey_user",      limit: 800
+    t.string   "pubkey_user",      limit: 1200
     t.string   "privkey_user_enc", limit: 2500
     t.datetime "created_at"
     t.datetime "updated_at"
