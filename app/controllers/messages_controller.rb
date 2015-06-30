@@ -71,9 +71,12 @@ class MessagesController < ApplicationController
       puts @sender.identity
       puts @recipient.identity
      if ((@sender.identity) && (@recipient.identity))
+       puts "identity ok"
        if (key.verify digest, Base64.decode64(params[:sig_service]), sig_service)
+         puts "verify ok"
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id, :read => false)
         if (@message)
+          puts "message ok"
           respond_to do |format|
             if @message.save
               @status_code = {:status_code => 122}
