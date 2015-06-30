@@ -46,7 +46,7 @@ class MessagesController < ApplicationController
       digest = OpenSSL::Digest::SHA256.new
       @user = User.find_by_identity(params[:identity])
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
-      if (key.verify digest, Base64.decode64(params[:sig_message]), sig_message)
+      if (key.verify digest, Base64.decode64(params[:sig_message]), sig_message) && checktime
         Message.find_by_sql(['Select * from messages where id = ?', params[:message_id]]).first.update_attribute(:read, true)
         render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
       end
