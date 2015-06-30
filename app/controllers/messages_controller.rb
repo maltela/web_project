@@ -67,8 +67,8 @@ class MessagesController < ApplicationController
       @recipient = User.find_by_identity(params[:recipient])
       digest = OpenSSL::Digest::SHA256.new
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@recipient.pubkey_user))
-      puts @sender.first.identity
-      puts @recipient.first.identity
+      puts @sender.identity
+      puts @recipient.identity
      if ((@sender.identity) && (@recipient.identity))
        if (key.verify digest, Base64.decode64(params[:sig_service]), sig_service)
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id, :read => false)
