@@ -76,23 +76,21 @@ class MessagesController < ApplicationController
          puts "verify ok"
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id, :read => false)
 
-         respond_to do |format|
          if (@message)
           puts "message ok"
             if @message.save
               @status_code = {:status_code => 122}
-              format.json  { render json: @status_code}
+              render json: @status_code.to_json
             else
               @status_code = {:status_code => 425}
-              format.json  { render json: @status_code}
+              render json: @status_code.to_json
             end
 
         else
           @status_code = {:status_code => 425}
             puts "message incorrect"
-          format.json  { render json: @status_code}
+          render json: @status_code.to_json
           end
-        end
        else
          @status_code = {:status_code => 424}
          render json: @status_code.to_json
