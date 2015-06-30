@@ -75,7 +75,8 @@ class MessagesController < ApplicationController
        if (key.verify digest, Base64.decode64(params[:sig_service]), sig_service)
          puts "verify ok"
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.user_id, :recipient_id => @recipient.user_id, :read => false)
-
+        if (checktime)
+          puts "time ok"
          if (@message)
           puts "message ok"
             if @message.save
@@ -86,15 +87,16 @@ class MessagesController < ApplicationController
               render json: @status_code.to_json
             end
 
-        else
-          @status_code = {:status_code => 425}
-            puts "message incorrect"
-          render json: @status_code.to_json
-          end
-       else
-         @status_code = {:status_code => 424}
-         render json: @status_code.to_json
-     end
+          else
+            @status_code = {:status_code => 425}
+              puts "message incorrect"
+            render json: @status_code.to_json
+            end
+         else
+           @status_code = {:status_code => 424}
+           render json: @status_code.to_json
+         end
+       end
      else
         @status_code = {:status_code => 427}
         render json: @status_code.to_json
@@ -130,21 +132,13 @@ class MessagesController < ApplicationController
       params.permit(:identity, :inner_envelope, :sig_recipient,:timestamp, :sig_message, :message_id)
     end
 
-    def verify_user(key, message, signature, iv)
+    def checktime()
       timestamp  = Time.now.to_i
 
-      sha256 = Digest::SHA2.new(256)
-      aes = OpenSSL::Cipher.new("AES-256-CFB")
-      key = sha256.digest(key)
-
-      aes.decrypt
-      aes.key = key
-      aes.iv = iv
-
-      if ((((timestamp-params[:timestamp])/ 1.minute)<=5) && (tmpsig == Base64.decode64(signature)))
+      if ((((timestamp-(params[:timestamp]).to_i)/ 1.minute)<=5) )
         return true
       else
-        return false
+        return nil
       end
     end
   end
