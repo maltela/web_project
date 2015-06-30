@@ -67,7 +67,7 @@ class MessagesController < ApplicationController
       puts sig_service
       @recipient = User.find_by_identity(params[:recipient])
       digest = OpenSSL::Digest::SHA256.new
-      key = OpenSSL::PKey::RSA.new(Base64.decode64(@recipient.pubkey_user))
+      key = OpenSSL::PKey::RSA.new(Base64.decode64(@sender.pubkey_user))
       puts @sender.identity
       puts @recipient.identity
      if ((@sender.identity) && (@recipient.identity))
