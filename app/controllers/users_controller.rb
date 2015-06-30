@@ -25,7 +25,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   # GET /users/1.json
-  def loginfritz
+  def login
     @user = User.find_by_sql(['select * from users Where identity like ?;', params[:identity]])
     if (User.find_by_identity(@user.first.identity))
       @userdata =  {:salt_masterkey => @user.first.salt_masterkey, :privkey_user_enc => @user.first.privkey_user_enc, :pubkey_user => @user.first.pubkey_user, :status => 111}
