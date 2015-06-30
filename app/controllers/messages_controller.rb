@@ -66,9 +66,10 @@ class MessagesController < ApplicationController
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
       digest = OpenSSL::Digest::SHA256.new
-      @user = User.find_by_identity(params[:recipient])
-      key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
+      key = OpenSSL::PKey::RSA.new(Base64.decode64(@recipient.pubkey_user))
     if (key.verify digest, Base64.decode64(params[:sig_service]), sig_service)
+      puts @sender.first.identity
+      puts @recipient.first.identity
      if ((User.find_by_identity(@sender.first.identity)) && User.find_by_identity(@recipient.first.identity))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         if (@message)
@@ -86,7 +87,7 @@ class MessagesController < ApplicationController
           @status_code = {:status_code => 425}
           format.json  { render json: @status_code}
         end
-       end
+     end
      else
         @status_code = {:status_code => 424}
         render json: @status_code.to_json
