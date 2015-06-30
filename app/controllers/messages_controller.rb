@@ -62,7 +62,7 @@ class MessagesController < ApplicationController
     #@status_code = {:status_code => 421}#Verifizierung
     #@status_code = {:status_code => 422}#Timeout
 
-      sig_service = params[:recipient].to_s + params[:inner_envelope].to_s + params[:timestamp].to_s
+      sig_service = params[:recipient].to_s + params[:inner_envelope][:sender].to_s + params[:inner_envelope][:cipher] + params[:inner_envelope][:iv] + Base64.decode64(params[:inner_envelope][:key_recipient_enc]) + params[:timestamp].to_s
       @sender = User.find_by_identity(params[:inner_envelope][:sender])
       @recipient = User.find_by_identity(params[:recipient])
       digest = OpenSSL::Digest::SHA256.new
