@@ -44,7 +44,7 @@ class MessagesController < ApplicationController
 
       sig_message = params[:identity].to_s + params[:timestamp].to_s
       digest = OpenSSL::Digest::SHA256.new
-      @user = User.find(params[:user_id])
+      @user = User.find_by_identity(params[:identity])
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
       if (key.verify digest, Base64.decode64(params[:sig_message]), sig_message)
         Message.find_by_sql(['Select * from messages where id = ?', params[:message_id]]).first.update_attribute(:read, true)
@@ -90,8 +90,8 @@ class MessagesController < ApplicationController
         @status_code = {:status_code => 424}
         render json: @status_code.to_json
     end
-      end
-      end
+  end
+  end
   # PATCH/PUT /messages/1
   # PATCH/PUT /messages/1.json
 
