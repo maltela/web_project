@@ -44,7 +44,7 @@ class MessagesController < ApplicationController
 
       sig_message = params[:identity].to_s + params[:timestamp].to_s
       digest = OpenSSL::Digest::SHA256.new
-      @user = User.find_by_name(params[:user_id])
+      @user = User.find(params[:user_id])
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
       if (key.verify digest, Base64.decode64(params[:sig_message]), sig_message)
         Message.find_by_sql(['Select * from messages where id = ?', params[:message_id]]).first.update_attribute(:read, true)
@@ -66,7 +66,7 @@ class MessagesController < ApplicationController
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
       digest = OpenSSL::Digest::SHA256.new
-      @user = User.find_by_name(params[:recipient])
+      @user = User.find_by_identity(params[:recipient])
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
       if (key.verify digest, Base64.decode64(params[:sig_service]), sig_service)
      if ((User.find_by_identity(@sender.first.identity)) && User.find_by_identity(@recipient.first.identity))
