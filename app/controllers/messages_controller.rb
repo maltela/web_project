@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
                                       where u.identity = ?;
                                     ',params[:identity]])
     if (@messages.first)
-      render json: @messages.to_json(only: [:message_id, :identity, :read])
+      render json: @messages.to_json(only: [:message_id, :identity, :read]), :status_code => 125
     else
       @status_code = {:status_code => 420}
       render json: @status_code.to_json
