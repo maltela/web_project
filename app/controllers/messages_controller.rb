@@ -42,11 +42,11 @@ class MessagesController < ApplicationController
                                     ])
     if (@json_msg.first)
 
-      sig_message = params[:identity] + params[:timestamp]
+      sig_message = params[:identity].to_s + params[:timestamp].to_s
       digest = OpenSSL::Digest::SHA256.new
       @user = User.find_by_name(params[:user_id])
       key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
-      if (key.verify digest, params[:sig_message], sig_message)
+      if (key.verify digest, Base64.decode64(params[:sig_message]), sig_message)
         Message.find_by_sql(['Select * from messages where id = ?', params[:message_id]]).first.update_attribute(:read, true)
         render json:  @json_msg.first.to_json(only: [:identity, :cipher, :sig_recipient, :iv, :key_recipient_enc])
       end
@@ -62,10 +62,13 @@ class MessagesController < ApplicationController
     #@status_code = {:status_code => 421}#Verifizierung
     #@status_code = {:status_code => 422}#Timeout
 
-      sig_service = params[:recipient] + params[:inner_envelope] + params[:timestamp]
+      sig_service = params[:recipient].to_s + params[:inner_envelope].to_s + params[:timestamp].to_s
       @sender = User.find_by_sql(['select * from users Where identity like ?;', params[:inner_envelope][:sender]])
       @recipient = User.find_by_sql(['select * from users Where identity like ?;', params[:recipient]])
-      if (verify_user(@sender.first.pubkey_user, sig_service, params[:sig_service], params[:inner_envelope][:iv]))
+      digest = OpenSSL::Digest::SHA256.new
+      @user = User.find_by_name(params[:user_id])
+      key = OpenSSL::PKey::RSA.new(Base64.decode64(@user.pubkey_user))
+      if (key.verify digest, Base64.decode64(params[:sig_service]), sig_service)
      if ((User.find_by_identity(@sender.first.identity)) && User.find_by_identity(@recipient.first.identity))
         @message = Message.new(:cipher => params[:inner_envelope][:cipher], :sig_recipient => params[:inner_envelope][:sig_recipient], :iv => params[:inner_envelope][:iv], :key_recipient_enc => params[:inner_envelope][:key_recipient_enc], :sender_id => @sender.first.user_id, :recipient_id => @recipient.first.user_id, :read => false)
         if (@message)
